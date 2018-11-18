@@ -28,6 +28,8 @@ func parseGitHubWebHook(secret []byte, req *http.Request) (*gitHubWebHook, error
 		return nil, err
 	}
 
+	//TODO: Handle ping
+
 	if !checkContentSignature(secret, hc.sig, body) {
 		return nil, errors.New("Invalid signature")
 	}
