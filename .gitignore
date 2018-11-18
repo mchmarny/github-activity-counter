@@ -10,3 +10,16 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Mac OS X hidden files
+.DS_Store
+
+# Vim swap files
+.*.sw?
+.vscode
+
+# Pow and Powder config
+/.pow*
+
+# mod
+vendor
