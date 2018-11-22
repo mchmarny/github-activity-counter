@@ -1,69 +1,59 @@
 package fn
 
 import (
+	"bytes"
+	"encoding/json"
 	"io/ioutil"
-	"os"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
-func TestParsingIssueComment(t *testing.T) {
-	validateSimpleEvent("samples/issue_comment.json", "issue_comment", t)
-}
+func TestGitHubEventHandler(t *testing.T) {
 
-func TestParsingIssues(t *testing.T) {
-	validateSimpleEvent("samples/issues.json", "issues", t)
-}
+	const testID = "1234"
+	const testEventType = "issue_comment"
+	const testFilePath = "samples/issue_comment.json"
+	const testSecret = "some-super-long-secret-string"
 
-func TestCommitComment(t *testing.T) {
-	validateSimpleEvent("samples/commit_comment.json", "commit_comment", t)
-}
-
-func TestPullRequestReviewComment(t *testing.T) {
-	validateSimpleEvent("samples/pull_request_review_comment.json",
-		"pull_request_review_comment", t)
-}
-
-func TestPullRequest(t *testing.T) {
-	validateSimpleEvent("samples/pull_request.json", "pull_request", t)
-}
-
-func TestPullRequestReview(t *testing.T) {
-	validateSimpleEvent("samples/pull_request_review.json", "pull_request_review", t)
-}
-
-func validateSimpleEvent(testDataPath string, issueType string, t *testing.T) {
-
-	jf, err := os.Open(testDataPath)
+	data, err := getFileContent(testFilePath)
 	if err != nil {
-		t.Errorf("Error while opening %s: %v", testDataPath, err)
+		t.Errorf("Error while opening %s: %v", testFilePath, err)
 	}
-	defer jf.Close()
-	data, _ := ioutil.ReadAll(jf)
 
-	var testID = "123"
-	se, err := parseSimpleEvent(data, testID, issueType)
+	key := []byte(testSecret)
+	sig := makeNewSignature(key, data)
+
+	r, _ := http.NewRequest("POST", "/", bytes.NewReader(data))
+	r.Header.Add(signatureHeader, sig)
+	r.Header.Add(eventTypeHeader, testEventType)
+	r.Header.Add(deliveryIDHeader, testID)
 	if err != nil {
-		t.Errorf("Error while parsing %s: %v", issueType, err)
+		t.Errorf("Error while creating request %s: %v", testFilePath, err)
 	}
 
-	if se.ID != testID {
-		t.Errorf("Invalid data: Expected %s got %s", testID, se.ID)
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GitHubEventHandler)
+	handler.ServeHTTP(rr, r)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Handler returned wrong status code: got %v expected %v",
+			status, http.StatusOK)
 	}
 
-	if se.Type != issueType {
-		t.Errorf("Invalid data: Expected %s got %s", issueType, se.Type)
+	body, err := ioutil.ReadAll(rr.Body)
+	if err != nil {
+		t.Errorf("Error while reading response body %v", err)
 	}
 
-	if se.Repo == "" {
-		t.Error("Invalid data: nil Repo")
+	ev := &SimpleEvent{}
+	err = json.Unmarshal(body, &ev)
+	if err != nil {
+		t.Errorf("Error while unmarshaling SimpleEvent from body %v", err)
 	}
 
-	if se.Actor == "" {
-		t.Error("Invalid data: nil Actor")
-	}
-
-	if se.EventAt.IsZero() {
-		t.Error("Invalid data: nil EventAt")
+	if ev.ID != testID {
+		t.Errorf("Invalid SimpleEvent ID: got: %s expected %s", ev.ID, testID)
 	}
 
 }

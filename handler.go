@@ -10,16 +10,21 @@ import (
 // GitHubEventHandler handles the GitHub WebHook call
 func GitHubEventHandler(w http.ResponseWriter, r *http.Request) {
 
-	once.Do(func() {
-		configInitializer("GitHubEventHandler")
-	})
-
 	w.Header().Set("Content-type", "application/json")
 
-	se, err := parseGitHubWebHook([]byte(secret), r)
+	once.Do(func() {
+		if err := configInitializer(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("Error while initializing configuration: %v", err)
+			io.WriteString(w, "{}")
+			return
+		}
+	})
+
+	se, err := parseGitHubWebHook([]byte(webHookSecret), r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Printf("Failed processing hook ('%s')", err)
+		log.Printf("Error while processing WebHook: %v", err)
 		io.WriteString(w, "{}")
 		return
 	}

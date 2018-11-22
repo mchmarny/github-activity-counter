@@ -11,9 +11,15 @@ type SimpleEvent struct {
 	Type      string          `json:"type,omitempty"`
 	Raw       json.RawMessage `json:"raw,omitempty"`
 	Countable bool            `json:"countable,omitempty"`
-	EventAt   time.Time       `json:"avent_time,omitempty"`
+	EventAt   time.Time       `json:"event_time,omitempty"`
 	Repo      string          `json:"repo,omitempty"`
 	Actor     string          `json:"actor,omitempty"`
+}
+
+// SimplePushEvent is simple version of the GitHub structure
+type SimplePushEvent struct {
+	User SimpleUser `json:"sender"`
+	Repo SimpleRepo `json:"repository"`
 }
 
 // ReviewEvent is simple version of the GitHub structure

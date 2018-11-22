@@ -2,6 +2,7 @@ package fn
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -16,38 +17,27 @@ const (
 	eventTypeHeader = "X-Github-Event"
 	// deliveryIDHeader is the GitHub header key used to pass the unique ID for the webhook event.
 	deliveryIDHeader = "X-Github-Delivery"
+
+	hookSecretEnvVarName = "HOOK_SECRET"
 )
 
 var (
 	ctx               context.Context
 	once              sync.Once
-	region            string
-	projectID         string
-	secret            string
+	webHookSecret     string
 	configInitializer = defaultConfigInitializer
 )
 
-func defaultConfigInitializer(fn string) {
+func defaultConfigInitializer() error {
 
-	log.Printf("%s configuration using: defaultConfigInitializer", fn)
-
+	log.Print("Initializing configuration using: defaultConfigInitializer")
 	ctx = context.Background()
 
-	secret = os.Getenv("HOOK_SECRET")
-	if secret == "" {
-		log.Fatalf("HOOK_SECRET environment variable not set")
+	webHookSecret = os.Getenv(hookSecretEnvVarName)
+	if webHookSecret == "" {
+		return fmt.Errorf("%s environment variable not set", hookSecretEnvVarName)
 	}
 
-	projectID = os.Getenv("GCP_PROJECT")
-	if projectID == "" {
-		log.Printf("GCP_PROJECT environment variable not set")
-		projectID = "NOT_SET"
-	}
-
-	region = os.Getenv("FUNCTION_REGION")
-	if region == "" {
-		log.Printf("FUNCTION_REGION not set, using default: us-central1")
-		region = "us-central1"
-	}
+	return nil
 
 }

@@ -4,16 +4,28 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
+	"io/ioutil"
+	"os"
 	"strings"
 )
 
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
+func getFileContent(path string) (conten []byte, err error) {
+
+	jf, err := os.Open(path)
+	if err != nil {
+		return nil, err
 	}
-	return false
+	defer jf.Close()
+	data, _ := ioutil.ReadAll(jf)
+	return data, nil
+}
+
+func makeNewSignature(key, content []byte) string {
+	dst := make([]byte, 40)
+	computed := hmac.New(sha1.New, key)
+	computed.Write(content)
+	hex.Encode(dst, computed.Sum(nil))
+	return "sha1=" + string(dst)
 }
 
 func computedBodySignature(key, content []byte) []byte {
@@ -23,7 +35,6 @@ func computedBodySignature(key, content []byte) []byte {
 }
 
 func checkContentSignature(content []byte, signature string, body []byte) bool {
-
 	const signaturePrefix = "sha1="
 	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
 

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 func parseGitHubWebHook(secret []byte, req *http.Request) (*SimpleEvent, error) {
@@ -45,9 +46,9 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 
 	// placeholder for returned struct
 	se := &SimpleEvent{
-		Type: eventType,
-		ID:   eventID,
-		//Raw:       (json.RawMessage)(body),
+		Type:      eventType,
+		ID:        eventID,
+		Raw:       (json.RawMessage)(body),
 		Countable: true,
 	}
 
@@ -100,6 +101,18 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 		}
 		se.Actor = ev.Review.User.Name
 		se.EventAt = ev.Review.CreatedAt
+		se.Repo = ev.Repo.Name
+
+	case "push":
+		ev := &SimplePushEvent{}
+		err := json.Unmarshal(body, &ev)
+		if err != nil {
+			log.Printf("Error parsing %s: %v", se.Type, err)
+			return nil, err
+		}
+		se.Actor = ev.User.Name
+		// There is no push time, using WebHook execution time
+		se.EventAt = time.Now()
 		se.Repo = ev.Repo.Name
 
 	default:

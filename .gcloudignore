@@ -1,5 +1,7 @@
 .git
 .gitignore
 .DS_Store
+coverage.out
 deploy
 Makefile
+/samples
