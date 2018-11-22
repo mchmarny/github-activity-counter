@@ -7,6 +7,15 @@ import (
 	"strings"
 )
 
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
 func computedBodySignature(key, content []byte) []byte {
 	computed := hmac.New(sha1.New, key)
 	computed.Write(content)

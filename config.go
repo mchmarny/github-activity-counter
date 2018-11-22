@@ -5,6 +5,19 @@ import (
 	"log"
 	"os"
 	"sync"
+
+	"gopkg.in/go-playground/webhooks.v5/github"
+)
+
+const (
+	// sha1Prefix is the prefix used by GitHub before the HMAC hexdigest.
+	sha1Prefix = "sha1"
+	// signatureHeader is the GitHub header key used to pass the HMAC hexdigest.
+	signatureHeader = "X-Hub-Signature"
+	// eventTypeHeader is the GitHub header key used to pass the event type.
+	eventTypeHeader = "X-Github-Event"
+	// deliveryIDHeader is the GitHub header key used to pass the unique ID for the webhook event.
+	deliveryIDHeader = "X-Github-Delivery"
 )
 
 var (
@@ -14,6 +27,7 @@ var (
 	projectID         string
 	secret            string
 	configInitializer = defaultConfigInitializer
+	hook              *github.Webhook
 )
 
 func defaultConfigInitializer(fn string) {
