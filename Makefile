@@ -20,6 +20,11 @@ policy:
 		--member allUsers \
 		--role roles/cloudfunctions.invoker
 
+url-lookup:
+	gcloud alpha functions describe github-event-handler \
+		--format='value(httpsTrigger.url)'
+
+
 test:
 	go test ./... -v
 

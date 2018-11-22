@@ -1,1 +1,1 @@
-module github.com/mchmarny/ghcounter
+module github.com/mchmarny/github-activity-counter
