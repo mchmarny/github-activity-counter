@@ -5,8 +5,6 @@ import (
 	"log"
 	"os"
 	"sync"
-
-	"gopkg.in/go-playground/webhooks.v5/github"
 )
 
 const (
@@ -27,7 +25,6 @@ var (
 	projectID         string
 	secret            string
 	configInitializer = defaultConfigInitializer
-	hook              *github.Webhook
 )
 
 func defaultConfigInitializer(fn string) {
