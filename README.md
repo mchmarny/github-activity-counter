@@ -2,6 +2,8 @@
 
 Simple GitHub activity event counter to get a real-time visibility into the repo collaboration activity. It captures series of GitHub WebHook events and extracts normalized activity data.
 
+>> Warning, this readme is still not complete
+
 ## Supported Events
 
 * issue_comment
