@@ -8,7 +8,7 @@ go:
 env:
   global:
     - GO111MODULE=on
-    - FN_SECRET=test
+    - HOOK_SECRET=test
 
 install:
   - go mod tidy
