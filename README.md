@@ -1,14 +1,6 @@
 # github-activity-counter
 
-Simple GitHub activity event counter to get a real-time visibility into the repo collaboration activity. It captures series of GitHub WebHook events and extracts normalized activity data.
-
-## Why
-
-* Getting true repo activity is complex (e.g. PR comments by author company)
-* GitHub build-in tools/APIs don't expose data at the right granularity
-* Most readily available SDKs/Libs are heavy, have a lot of dependencies
-
->> Warning, this readme is still not complete
+Simple GitHub activity counter to get a real-time visibility into the repo collaboration events. It captures series of GitHub WebHook events and extracts normalized activity data.
 
 ## Supported Events
 
@@ -19,6 +11,12 @@ Simple GitHub activity event counter to get a real-time visibility into the repo
 * [pull_request_review_comment](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent) - Triggered when a comment on a pull request's unified diff is created, edited, or deleted (in the Files Changed tab)
 * [pull_request_review](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent) - Triggered when a comment on a pull request's unified diff is created, edited, or deleted (in the Files Changed tab)
 * [push](https://developer.github.com/v3/activity/events/types/#pushevent) - Triggered on a push to a repository branch. Branch pushes and repository tag pushes also trigger webhook push events
+
+## Why
+
+* Getting true repo activity is complex (e.g. PR comments by author vs commited which may be tool like prow)
+* GitHub build-in tools/APIs don't expose data at the right granularity (e.g. user asociated org grouped by month activity)
+* Most readily available SDKs/Libs address only data retreaval, and have a lot of dependencies
 
 ## Extracted Data
 
