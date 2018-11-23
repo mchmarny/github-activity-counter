@@ -1,4 +1,4 @@
-package handler
+package counter
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/mchmarny/github-activity-counter/handler/stores"
+	"github.com/mchmarny/github-activity-counter/stores"
 )
 
 const (

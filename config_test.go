@@ -1,4 +1,4 @@
-package handler
+package counter
 
 import (
 	"testing"
