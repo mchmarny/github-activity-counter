@@ -1,0 +1,16 @@
+language: go
+sudo: false
+notifications:
+  email: true
+go:
+ - "1.11.x"
+
+env:
+  - GO111MODULE=on
+  - FN_SECRET=test
+
+install:
+  - go mod tidy
+
+script:
+  - go test -v ./...
