@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"sync"
+
+	"github.com/mchmarny/github-activity-counter/stores"
 )
 
 const (
@@ -19,6 +21,8 @@ const (
 	deliveryIDHeader = "X-Github-Delivery"
 
 	hookSecretEnvVarName = "HOOK_SECRET"
+
+	storageTypeEnvVarName = "STORE_TYPE"
 )
 
 var (
@@ -26,6 +30,7 @@ var (
 	once              sync.Once
 	webHookSecret     string
 	configInitializer = defaultConfigInitializer
+	store             Storable
 )
 
 func defaultConfigInitializer() error {
@@ -36,6 +41,21 @@ func defaultConfigInitializer() error {
 	webHookSecret = os.Getenv(hookSecretEnvVarName)
 	if webHookSecret == "" {
 		return fmt.Errorf("%s environment variable not set", hookSecretEnvVarName)
+	}
+
+	storeInitArgs := map[string]interface{}{
+		"TBDLater": 1,
+	}
+
+	storageType := os.Getenv(storageTypeEnvVarName)
+	if storageType == "" {
+
+		ims := &stores.InMemoryStore{}
+		store = ims
+		err := store.Initialize(storeInitArgs)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

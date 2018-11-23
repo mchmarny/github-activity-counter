@@ -29,7 +29,7 @@ func GitHubEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: parse se (SimpleEvent)
+	//TODO: save SimpleEvent using Storable
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(se)

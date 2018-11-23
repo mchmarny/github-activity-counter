@@ -2,6 +2,12 @@
 
 Simple GitHub activity event counter to get a real-time visibility into the repo collaboration activity. It captures series of GitHub WebHook events and extracts normalized activity data.
 
+## Why
+
+* Getting true repo activity is complex (e.g. PR comments by author company)
+* GitHub build-in tools/APIs don't expose data at the right granularity
+* Most readily available SDKs/Libs are heavy, have a lot of dependencies
+
 >> Warning, this readme is still not complete
 
 ## Supported Events
@@ -57,7 +63,7 @@ httpsTrigger:
 If you ever forget that, you can look up the URL of your function using
 
 ```shell
-make url-lookup
+make url
 ```
 
 The first time you deploy, your function will be private by default. To expose it to world:

@@ -7,9 +7,11 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/mchmarny/github-activity-counter/types"
 )
 
-func parseGitHubWebHook(secret []byte, req *http.Request) (*SimpleEvent, error) {
+func parseGitHubWebHook(secret []byte, req *http.Request) (*types.SimpleEvent, error) {
 
 	var sig string
 	if sig = req.Header.Get(signatureHeader); len(sig) == 0 {
@@ -42,10 +44,10 @@ func parseGitHubWebHook(secret []byte, req *http.Request) (*SimpleEvent, error) 
 
 }
 
-func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, error) {
+func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEvent, error) {
 
 	// placeholder for returned struct
-	se := &SimpleEvent{
+	se := &types.SimpleEvent{
 		Type:      eventType,
 		ID:        eventID,
 		Raw:       (json.RawMessage)(body),
@@ -58,7 +60,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 	case "issue_comment":
 		fallthrough
 	case "commit_comment":
-		ev := &CommentEvent{}
+		ev := &types.CommentEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)
@@ -69,7 +71,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 		se.Repo = ev.Repo.Name
 
 	case "issues":
-		ev := &IssuesEvent{}
+		ev := &types.IssuesEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing issues: %v", err)
@@ -82,7 +84,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 	case "pull_request":
 		fallthrough
 	case "pull_request_review_comment":
-		ev := &PullRequestEvent{}
+		ev := &types.PullRequestEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)
@@ -93,7 +95,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 		se.Repo = ev.Repo.Name
 
 	case "pull_request_review":
-		ev := &ReviewEvent{}
+		ev := &types.ReviewEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)
@@ -104,7 +106,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, err
 		se.Repo = ev.Repo.Name
 
 	case "push":
-		ev := &SimplePushEvent{}
+		ev := &types.SimplePushEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)

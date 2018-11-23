@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/mchmarny/github-activity-counter/types"
 )
 
 func TestGitHubEventHandler(t *testing.T) {
@@ -46,7 +48,7 @@ func TestGitHubEventHandler(t *testing.T) {
 		t.Errorf("Error while reading response body %v", err)
 	}
 
-	ev := &SimpleEvent{}
+	ev := &types.SimpleEvent{}
 	err = json.Unmarshal(body, &ev)
 	if err != nil {
 		t.Errorf("Error while unmarshaling SimpleEvent from body %v", err)
