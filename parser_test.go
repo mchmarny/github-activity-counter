@@ -8,9 +8,10 @@ import (
 
 func TestParseWebHookWithInvalidSig(t *testing.T) {
 
-	const testSecret = "some-super-long-secret-string"
+	defaultConfigInitializer()
+
 	var testData = []byte("{}")
-	key := []byte(testSecret)
+	key := []byte(webHookSecret)
 	r, _ := http.NewRequest("POST", "/", bytes.NewReader(testData))
 	r.Header.Add(signatureHeader, "bad-key")
 	r.Header.Add(eventTypeHeader, "not used in test")
@@ -25,17 +26,18 @@ func TestParseWebHookWithInvalidSig(t *testing.T) {
 
 func TestParseWebHookHeaders(t *testing.T) {
 
+	defaultConfigInitializer()
+
 	const testID = "1234"
 	const testEventType = "issue_comment"
 	const testFilePath = "samples/issue_comment.json"
-	const testSecret = "some-super-long-secret-string"
 
 	data, err := getFileContent(testFilePath)
 	if err != nil {
 		t.Errorf("Error while opening %s: %v", testFilePath, err)
 	}
 
-	key := []byte(testSecret)
+	key := []byte(webHookSecret)
 	sig := makeNewSignature(key, data)
 
 	r, _ := http.NewRequest("POST", "/", bytes.NewReader(data))

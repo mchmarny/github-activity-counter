@@ -13,17 +13,18 @@ import (
 
 func TestGitHubEventHandler(t *testing.T) {
 
+	defaultConfigInitializer()
+
 	const testID = "1234"
 	const testEventType = "issue_comment"
 	const testFilePath = "samples/issue_comment.json"
-	const testSecret = "some-super-long-secret-string"
 
 	data, err := getFileContent(testFilePath)
 	if err != nil {
 		t.Errorf("Error while opening %s: %v", testFilePath, err)
 	}
 
-	key := []byte(testSecret)
+	key := []byte(webHookSecret)
 	sig := makeNewSignature(key, data)
 
 	r, _ := http.NewRequest("POST", "/", bytes.NewReader(data))
