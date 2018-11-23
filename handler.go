@@ -29,7 +29,16 @@ func GitHubEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: save SimpleEvent using Storable
+	// save is event is countable (was parsed)
+	if se.Countable {
+		err = store.Store(se)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("Error while storing event: %v", err)
+			io.WriteString(w, "{}")
+			return
+		}
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(se)
