@@ -4,13 +4,13 @@ Simple GitHub activity counter to get a real-time visibility into the repo colla
 
 ## Supported Events
 
-* [issue_comment](https://developer.github.com/v3/activity/events/types/#issuecommentevent) - Triggered when an issue comment is created, edited, or deleted
-* [commit_comment](https://developer.github.com/v3/activity/events/types/#commitcommentevent) - Triggered when a commit comment is created
-* [issues](https://developer.github.com/v3/activity/events/types/#issuesevent) - Triggered when an issue is opened, edited, deleted, transferred, closed, reopened, assigned, unassigned, labeled, unlabeled, milestoned, or demilestoned
-* [pull_request](https://developer.github.com/v3/activity/events/types/#pullrequestevent) - Triggered when a pull request is assigned, unassigned, labeled, unlabeled, opened, edited, closed, reopened, or synchronized. Also triggered when a pull request review is requested, or when a review request is removed.
-* [pull_request_review_comment](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent) - Triggered when a comment on a pull request's unified diff is created, edited, or deleted (in the Files Changed tab)
-* [pull_request_review](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent) - Triggered when a comment on a pull request's unified diff is created, edited, or deleted (in the Files Changed tab)
-* [push](https://developer.github.com/v3/activity/events/types/#pushevent) - Triggered on a push to a repository branch. Branch pushes and repository tag pushes also trigger webhook push events
+* [issue_comment](https://developer.github.com/v3/activity/events/types/#issuecommentevent) - Issue comment is created, edited, or deleted
+* [commit_comment](https://developer.github.com/v3/activity/events/types/#commitcommentevent) - Commit comment is created
+* [issues](https://developer.github.com/v3/activity/events/types/#issuesevent) - Issue is opened, edited, deleted, transferred, closed, reopened, assigned, unassigned, labeled, unlabeled, milestoned, or demilestoned
+* [pull_request](https://developer.github.com/v3/activity/events/types/#pullrequestevent) - Pull request is assigned, unassigned, labeled, unlabeled, opened, edited, closed, reopened, or synchronized. (Note, also triggered when a pull request review is requested/removed)
+* [pull_request_review_comment](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent) - Comment on a pull request's unified diff is created, edited, or deleted
+* [pull_request_review](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent) - Comment on a pull request's unified diff is created, edited, or deleted
+* [push](https://developer.github.com/v3/activity/events/types/#pushevent) - Push to a repository branch (also repository tag pushes)
 
 ## Why
 
