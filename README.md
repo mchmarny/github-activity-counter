@@ -39,7 +39,7 @@ To setup `github-activity-counter` you will have to:
 
 ### Deploy the code
 
->> Assumes you already configured GCP account, project and gcloud
+> Assumes you already configured GCP account, project and gcloud
 
 First, edit the `FN_SECRET` variable in `Makefile` to some auto-generated, opaque string. Then you should be able to deploy the function to GCF using
 
@@ -72,7 +72,7 @@ The first time you deploy, your function will be private by default. To expose i
 make policy
 ```
 
->> Your GitHub WebHook will include secret so only the GitHub activity will be counted
+> Your GitHub WebHook will include secret so only the GitHub activity will be counted
 
 
 ### Setup GitHub WebHook
