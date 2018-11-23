@@ -22,13 +22,16 @@ Simple GitHub activity event counter to get a real-time visibility into the repo
 
 ## Extracted Data
 
-* ID (string) - WebHook delivery ID, immutable even when the same event is submitted multiple times
-* Type (string) - GitHUb event type, e.g. commit_comment
-* EventAt (time.Time) - True event time, not the WebHook processing time (with exception of push which doesn't have push time and could include multiple commits)
-* Repo (string) - Fully-qualified name of the repository, e.g. mchmarny/github-activity-counter
-* Actor (string) - GitHub username of the actor who initialized that event, e.g. PR author vs the PR merger who could be a automation tool like prow
-* Raw (json.RawMessage) - Full content fo the GitHub WebHook payload
-* Countable (bool) - Indicator whether event was parsed or not one of the types that are counted (e.g. check_run)
+| Data Element | Type            | Description                                                                                                                               |
+| ------------ | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| ID           | string          | WebHook delivery ID, immutable even when the same event is submitted multiple times                                                       |
+| Type         | string          | GitHUb event type, e.g. commit_comment                                                                                                    |
+| EventAt      | time.Time       | True event time, not the WebHook processing time (with exception of push which doesn't have push time and could include multiple commits) |
+| Repo         | string          | Fully-qualified name of the repository, e.g. mchmarny/github-activity-counter                                                             |
+| Actor        | string          | GitHub username of the actor who initialized that event, e.g. PR author vs the PR merger who could be a automation tool like prow         |
+| Raw          | json.RawMessage | Full content fo the GitHub WebHook payload                                                                                                |
+| Countable    | bool            | Indicator whether event was parsed or not one of the types that are counted (e.g. check_run)                                              |
+
 
 ## Setup
 
