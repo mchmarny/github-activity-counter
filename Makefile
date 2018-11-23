@@ -1,6 +1,6 @@
 GCP_REGION=us-central1
 FN_NAME=github-event-handler
-HOOK_SECRET=some-super-long-secret-string
+# HOOK_SECRET=some-super-long-secret-string //defined in envvars
 
 all: url
 
