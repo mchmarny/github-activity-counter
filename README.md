@@ -1,4 +1,4 @@
-# github-activity-counter
+# github-activity-counter [![Build Status](https://travis-ci.org/mchmarny/github-activity-counter.svg?branch=master)](https://travis-ci.org/mchmarny/github-activity-counter)
 
 Simple GitHub activity counter to get a real-time visibility into the repo collaboration events. It captures series of GitHub WebHook events and extracts normalized activity data.
 
