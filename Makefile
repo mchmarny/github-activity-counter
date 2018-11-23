@@ -2,6 +2,9 @@ GCP_PROJECT=s9-demo
 GCP_REGION=us-central1
 PUBSUB_EVENTS_TOPIC=github-events
 GCP_FN_NAME=github-event-handler
+BQ_SCHEMA_NAME=github
+BQ_TABLE_NAME=events
+RUN_ID := $(shell /bin/date "+%Y-%m-%d-%H-%M-%S")
 # HOOK_SECRET=some-super-long-secret-string //defined in envvars
 
 all: url
@@ -28,6 +31,15 @@ url:
 
 topic:
 	gcloud beta pubsub topics create ${PUBSUB_EVENTS_TOPIC}
+
+table:
+	bq mk $(BQ_SCHEMA_NAME)
+	bq mk --schema id:string,repo:string,type:string,actor:string,event_time:timestamp,countable:boolean,raw:record -t $(BQ_SCHEMA_NAME).$(BQ_TABLE_NAME)
+
+job:
+	gcloud beta dataflow jobs run $(GCP_FN_NAME)-$(RUN_ID) \
+  		--gcs-location gs://dataflow-templates/pubsub-to-bigquery/template_file \
+  		--parameters="topic=projects/${GCP_PROJECT}/topics/${PUBSUB_EVENTS_TOPIC}","table=${GCP_PROJECT}:$(BQ_SCHEMA_NAME).$(BQ_TABLE_NAME)"
 
 test:
 	go test ./... -v

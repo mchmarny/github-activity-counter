@@ -50,7 +50,6 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEven
 	se := &types.SimpleEvent{
 		Type:      eventType,
 		ID:        eventID,
-		Raw:       (json.RawMessage)(body),
 		Countable: true,
 	}
 
