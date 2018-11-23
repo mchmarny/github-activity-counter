@@ -34,7 +34,7 @@ topic:
 
 table:
 	bq mk $(BQ_SCHEMA_NAME)
-	bq mk --schema id:string,repo:string,type:string,actor:string,event_time:timestamp,countable:boolean,raw:record -t $(BQ_SCHEMA_NAME).$(BQ_TABLE_NAME)
+	bq mk --schema id:string,repo:string,type:string,actor:string,event_time:timestamp,countable:boolean -t $(BQ_SCHEMA_NAME).$(BQ_TABLE_NAME)
 
 job:
 	gcloud beta dataflow jobs run $(GCP_FN_NAME)-$(RUN_ID) \

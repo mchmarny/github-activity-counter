@@ -46,27 +46,39 @@ First you will need to create a pubsub topic where `github-activity-counter` wil
 make topic
 ```
 
-Then, you will need to define secret that will be shared between GitHub and your Function. Best to use an auto-generated, opaque, string. You can generate 32 character long string using `openssl` like this:
+Create BigQuery table
+
+```shell
+make table
+```
+
+Create Dataflow job to load data from PubSub topic to BigQuery table
+
+```shell
+make job
+```
+
+Define secret that will be shared between GitHub and your Function. Best to use an auto-generated, opaque, string. You can generate 32 character long string using `openssl` like this:
 
 ```shell
 openssl rand -base64 32
 ```
 
-You will then need to set that secrete as an `HOOK_SECRET` system variable or define it in the `Makefile`
+Set that secrete as an `HOOK_SECRET` system variable or define it in the `Makefile`
 
-Now you can deploy the function to GCF
+Deploy the function to GCF
 
 ```shell
 make deploy
 ```
 
-The response from the deployment will be
+The response from the deployment will be...
 
 ```shell
 Deploying function (may take a while - up to 2 minutes)
 ```
 
-Followed by metadata about your function. The one we need to capture will be the URL of your function. Should look like this:
+...followed by metadata about your function. The one we need to capture will be the URL of your function. Should look like this:
 
 ```shell
 httpsTrigger:
