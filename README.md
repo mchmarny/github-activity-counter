@@ -14,9 +14,9 @@ Simple GitHub activity counter to get a real-time visibility into the repo colla
 
 ## Why
 
-* Getting true repo activity is complex (e.g. PR comments by author vs commited which may be tool like prow)
-* GitHub build-in tools/APIs don't expose data at the right granularity (e.g. user asociated org grouped by month activity)
-* Most readily available SDKs/Libs address only data retreaval, and have a lot of dependencies
+* Getting true repo activity is complex (e.g. PR comments by author vs committed which may be tool like prow)
+* GitHub build-in tools/APIs don't expose data at the right granularity (e.g. user associated org grouped by month activity)
+* Most readily available SDKs/Libs address only data retrieval, and have a lot of dependencies
 
 ## Extracted Data
 
