@@ -1,13 +1,13 @@
 GCP_REGION=us-central1
 FN_NAME=github-event-handler
-FN_SECRET=some-super-long-secret-string
+HOOK_SECRET=some-super-long-secret-string
 
 all: url
 
 deploy:
 	gcloud alpha functions deploy $(FN_NAME) \
 		--entry-point GitHubEventHandler \
-		--set-env-vars HOOK_SECRET=$(FN_SECRET) \
+		--set-env-vars HOOK_SECRET=$(HOOK_SECRET) \
 		--memory 128MB \
 		--region $(GCP_REGION) \
 		--runtime go111 \
@@ -34,3 +34,8 @@ cover:
 
 deps:
 	go mod tidy
+
+docs:
+	godoc -http=:8888 &
+	open http://localhost:8888/pkg/github.com/mchmarny/github-activity-counter/
+	# killall -9 godoc

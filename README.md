@@ -1,6 +1,6 @@
 # github-activity-counter [![Build Status](https://travis-ci.org/mchmarny/github-activity-counter.svg?branch=master)](https://travis-ci.org/mchmarny/github-activity-counter)
 
-Simple GitHub activity counter to get a real-time visibility into the repo collaboration events. It captures series of GitHub WebHook events and extracts normalized activity data.
+The `github-activity-counter` is a simple GitHub activity counter to get a real-time visibility into the repo collaboration events. It captures series of GitHub WebHook events and extracts normalized activity data for configurable persistence.
 
 ## Supported Events
 
@@ -38,9 +38,9 @@ To setup `github-activity-counter` you will have to:
 
 ### Deploy the code
 
-> Assumes you already configured GCP account, project and gcloud
+> Assumes you already configured your GCP account, project and gcloud
 
-First, edit the `FN_SECRET` variable in `Makefile` to some auto-generated, opaque string. For example:
+First, edit the `HOOK_SECRET` variable in `Makefile` to some auto-generated, opaque string. For example:
 
 ```shell
 openssl rand -base64 32
@@ -70,6 +70,8 @@ If you ever forget that, you can look up the URL of your function using
 ```shell
 make url
 ```
+
+> Capture the function URL for use in the WebHook configuration
 
 The first time you deploy, your function will be private by default. To expose it to world:
 
