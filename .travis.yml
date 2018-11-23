@@ -6,8 +6,9 @@ go:
  - "1.11.x"
 
 env:
-  - GO111MODULE=on
-  - FN_SECRET=test
+  global:
+    - GO111MODULE=on
+    - FN_SECRET=test
 
 install:
   - go mod tidy
