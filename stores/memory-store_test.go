@@ -11,11 +11,7 @@ func TestDefaultConfigInitializer(t *testing.T) {
 
 	store := &InMemoryStore{}
 
-	storeInitArgs := map[string]interface{}{
-		"TBDLater": 1,
-	}
-
-	err := store.Initialize(storeInitArgs)
+	err := store.Initialize()
 	if err != nil {
 		t.Errorf("Error while initializing InMemoryStore: %v", err)
 	}
@@ -30,14 +26,6 @@ func TestDefaultConfigInitializer(t *testing.T) {
 	}
 
 	err = store.Store(ev1)
-	if err != nil {
-		t.Errorf("Error while storing event: %v", err)
-	}
-
-	ev2 := ev1
-	ev2.ID = "2"
-
-	err = store.Store(ev2)
 	if err != nil {
 		t.Errorf("Error while storing event: %v", err)
 	}

@@ -1,20 +1,22 @@
+GCP_PROJECT=s9-demo
 GCP_REGION=us-central1
-FN_NAME=github-event-handler
+PUBSUB_EVENTS_TOPIC=github-events
+GCP_FN_NAME=github-event-handler
 # HOOK_SECRET=some-super-long-secret-string //defined in envvars
 
 all: url
 
 deploy:
-	gcloud alpha functions deploy $(FN_NAME) \
+	gcloud alpha functions deploy $(GCP_FN_NAME) \
 		--entry-point GitHubEventHandler \
-		--set-env-vars HOOK_SECRET=$(HOOK_SECRET) \
+		--set-env-vars HOOK_SECRET=$(HOOK_SECRET),PUBSUB_EVENTS_TOPIC=$(PUBSUB_EVENTS_TOPIC) \
 		--memory 128MB \
 		--region $(GCP_REGION) \
 		--runtime go111 \
 		--trigger-http
 
 policy:
-	gcloud alpha functions add-iam-policy-binding $(FN_NAME) \
+	gcloud alpha functions add-iam-policy-binding $(GCP_FN_NAME) \
 		--region $(GCP_REGION) \
 		--member allUsers \
 		--role roles/cloudfunctions.invoker
@@ -23,6 +25,9 @@ url:
 	gcloud alpha functions describe github-event-handler \
 		--region $(GCP_REGION) \
 		--format='value(httpsTrigger.url)'
+
+topic:
+	gcloud beta pubsub topics create ${PUBSUB_EVENTS_TOPIC}
 
 test:
 	go test ./... -v

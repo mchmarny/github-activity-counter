@@ -7,7 +7,7 @@ import (
 // Storable represents simple event store
 type Storable interface {
 	// Initialize is invoked once per Storable life cycle to configure the store
-	Initialize(args map[string]interface{}) error
+	Initialize() error
 	// Store persist the SimpleEvent
 	Store(event *types.SimpleEvent) error
 }

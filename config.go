@@ -22,7 +22,9 @@ const (
 
 	hookSecretEnvVarName = "HOOK_SECRET"
 
-	storageTypeEnvVarName = "STORE_TYPE"
+	projectIDEnvVarName = "GCP_PROJECT"
+
+	pubsubTopicNameEnvVarName = "PUBSUB_EVENTS_TOPIC"
 )
 
 var (
@@ -43,19 +45,25 @@ func defaultConfigInitializer() error {
 		return fmt.Errorf("%s environment variable not set", hookSecretEnvVarName)
 	}
 
-	storeInitArgs := map[string]interface{}{
-		"TBDLater": 1,
-	}
+	projectID := os.Getenv(projectIDEnvVarName)
+	topicName := os.Getenv(pubsubTopicNameEnvVarName)
 
-	storageType := os.Getenv(storageTypeEnvVarName)
-	if storageType == "" {
-
+	// if project and topics are defined then pubsub else in-memory for testing
+	if projectID == "" || topicName == "" {
 		ims := &stores.InMemoryStore{}
 		store = ims
-		err := store.Initialize(storeInitArgs)
-		if err != nil {
-			return err
+	} else {
+		pss := &stores.PubSubStore{
+			ProjectID: projectID,
+			TopicName: topicName,
+			Ctx: ctx,
 		}
+		store = pss
+	}
+
+	err := store.Initialize()
+	if err != nil {
+		return err
 	}
 
 	return nil
