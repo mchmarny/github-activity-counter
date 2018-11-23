@@ -40,7 +40,13 @@ To setup `github-activity-counter` you will have to:
 
 > Assumes you already configured GCP account, project and gcloud
 
-First, edit the `FN_SECRET` variable in `Makefile` to some auto-generated, opaque string. Then you should be able to deploy the function to GCF using
+First, edit the `FN_SECRET` variable in `Makefile` to some auto-generated, opaque string. For example:
+
+```shell
+openssl rand -base64 32
+```
+
+ Then you should be able to deploy the function to GCF using
 
 ```shell
 make deploy

@@ -1,4 +1,3 @@
-# Go parameters
 GCP_REGION=us-central1
 FN_NAME=github-event-handler
 FN_SECRET=some-super-long-secret-string
