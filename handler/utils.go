@@ -1,4 +1,4 @@
-package fn
+package handler
 
 import (
 	"crypto/hmac"

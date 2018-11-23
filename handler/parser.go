@@ -1,4 +1,4 @@
-package fn
+package handler
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/mchmarny/github-activity-counter/types"
+	"github.com/mchmarny/github-activity-counter/handler/types"
 )
 
 func parseGitHubWebHook(secret []byte, req *http.Request) (*types.SimpleEvent, error) {

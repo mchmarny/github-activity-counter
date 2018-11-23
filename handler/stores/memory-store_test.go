@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mchmarny/github-activity-counter/types"
+	"github.com/mchmarny/github-activity-counter/handler/types"
 )
 
 func TestDefaultConfigInitializer(t *testing.T) {

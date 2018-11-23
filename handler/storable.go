@@ -1,7 +1,7 @@
-package fn
+package handler
 
 import (
-	"github.com/mchmarny/github-activity-counter/types"
+	"github.com/mchmarny/github-activity-counter/handler/types"
 )
 
 // Storable represents simple event store

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/mchmarny/github-activity-counter/types"
+	"github.com/mchmarny/github-activity-counter/handler/types"
 )
 
 // InMemoryStore represents simple event store

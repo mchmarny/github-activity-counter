@@ -1,4 +1,4 @@
-package fn
+package handler
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/mchmarny/github-activity-counter/types"
+	"github.com/mchmarny/github-activity-counter/handler/types"
 )
 
 func TestGitHubEventHandler(t *testing.T) {
@@ -17,7 +17,7 @@ func TestGitHubEventHandler(t *testing.T) {
 
 	const testID = "1234"
 	const testEventType = "issue_comment"
-	const testFilePath = "samples/issue_comment.json"
+	const testFilePath = "../samples/issue_comment.json"
 
 	data, err := getFileContent(testFilePath)
 	if err != nil {
