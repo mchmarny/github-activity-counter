@@ -1,43 +1,39 @@
-package counter
+package main
 
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 )
 
-// GitHubEventHandler handles the GitHub WebHook call
-func GitHubEventHandler(w http.ResponseWriter, r *http.Request) {
+func gitHubEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
 
-	once.Do(func() {
-		if err := configInitializer(); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error while initializing configuration: %v", err)
-			io.WriteString(w, "{}")
-			return
-		}
-	})
-
-	se, err := parseGitHubWebHook([]byte(webHookSecret), r)
+	se, err := parseGitHubWebHook(r)
 	if err != nil {
+		logger.Printf("Error while processing WebHook: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
-		log.Printf("Error while processing WebHook: %v", err)
 		io.WriteString(w, "{}")
 		return
 	}
 
-	// save is event is countable (was parsed)
 	if se.Countable {
-		err = store.Store(se)
+		err = store(r.Context(), se)
 		if err != nil {
+			logger.Printf("Error while storing event: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error while storing event: %v", err)
 			io.WriteString(w, "{}")
 			return
 		}
+	}
+
+	err = metricsClient.Publish(r.Context(), se.Type, "github-event-counter", int64(1))
+	if err != nil {
+		logger.Printf("Error while publishing metrics: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, "{}")
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+
+export GO111MODULE=on
+
+go mod tidy
+go mod vendor
+go build -a -tags netgo \
+    -ldflags '-w -extldflags "-static"' \
+    -mod vendor \
+    -o bin/app

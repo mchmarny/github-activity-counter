@@ -1,4 +1,4 @@
-package counter
+package main
 
 import (
 	"bytes"
@@ -8,16 +8,13 @@ import (
 
 func TestParseWebHookWithInvalidSig(t *testing.T) {
 
-	defaultConfigInitializer()
-
 	var testData = []byte("{}")
-	key := []byte(webHookSecret)
 	r, _ := http.NewRequest("POST", "/", bytes.NewReader(testData))
 	r.Header.Add(signatureHeader, "bad-key")
 	r.Header.Add(eventTypeHeader, "not used in test")
 	r.Header.Add(deliveryIDHeader, "not used in test")
 
-	_, err := parseGitHubWebHook(key, r)
+	_, err := parseGitHubWebHook(r)
 	if err == nil {
 		t.Error("Expected invalid signature error")
 	}
@@ -26,11 +23,9 @@ func TestParseWebHookWithInvalidSig(t *testing.T) {
 
 func TestParseWebHookHeaders(t *testing.T) {
 
-	defaultConfigInitializer()
-
 	const testID = "1234"
 	const testEventType = "issue_comment"
-	const testFilePath = "samples/issue_comment.json"
+	const testFilePath = "sample/issue_comment.json"
 
 	data, err := getFileContent(testFilePath)
 	if err != nil {
@@ -45,7 +40,7 @@ func TestParseWebHookHeaders(t *testing.T) {
 	r.Header.Add(eventTypeHeader, testEventType)
 	r.Header.Add(deliveryIDHeader, testID)
 
-	se, err := parseGitHubWebHook(key, r)
+	se, err := parseGitHubWebHook(r)
 	if err != nil {
 		t.Errorf("Error while parsing WebHook %v", err)
 		return
@@ -62,36 +57,36 @@ func TestParseWebHookHeaders(t *testing.T) {
 }
 
 func TestParsingPush(t *testing.T) {
-	validateSimpleEvent("samples/push.json", "push", t)
+	validateSimpleEvent("sample/push.json", "push", t)
 }
 
 func TestParsingIssueComment(t *testing.T) {
-	validateSimpleEvent("samples/issue_comment.json", "issue_comment", t)
+	validateSimpleEvent("sample/issue_comment.json", "issue_comment", t)
 }
 
 func TestParsingIssues(t *testing.T) {
-	validateSimpleEvent("samples/issues.json", "issues", t)
+	validateSimpleEvent("sample/issues.json", "issues", t)
 }
 
 func TestCommitComment(t *testing.T) {
-	validateSimpleEvent("samples/commit_comment.json", "commit_comment", t)
+	validateSimpleEvent("sample/commit_comment.json", "commit_comment", t)
 }
 
 func TestPullRequestReviewComment(t *testing.T) {
-	validateSimpleEvent("samples/pull_request_review_comment.json",
+	validateSimpleEvent("sample/pull_request_review_comment.json",
 		"pull_request_review_comment", t)
 }
 
 func TestPullRequest(t *testing.T) {
-	validateSimpleEvent("samples/pull_request.json", "pull_request", t)
+	validateSimpleEvent("sample/pull_request.json", "pull_request", t)
 }
 
 func TestPullRequestReview(t *testing.T) {
-	validateSimpleEvent("samples/pull_request_review.json", "pull_request_review", t)
+	validateSimpleEvent("sample/pull_request_review.json", "pull_request_review", t)
 }
 
 func TestNonCountableEvent(t *testing.T) {
-	const testDataPath = "samples/delete.json"
+	const testDataPath = "sample/delete.json"
 	const issueType = "delete"
 	data, err := getFileContent(testDataPath)
 	if err != nil {

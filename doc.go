@@ -1,8 +1,10 @@
-// Package counter github-activity-counter
+// Package counter main
 //
-// The `github-activity-counter` is a simple GitHub activity counter to get a real-time
-// visibility into the repo collaboration events. It captures series of GitHub WebHook
-// events and extracts normalized activity data for configurable persistence.
+// Simple Cloud Run service you can configure as a target for GitHub event
+// WebHook to monitor repository (or organization) activity.Besides capturing
+// the real-time event throughput metrics in Stackdriver, this service also
+// normalizes the GitHub activity data and stores the results in an easy to
+// query BigQuery table.
 //
 // Terms Of Service:
 //
@@ -10,8 +12,8 @@
 //
 //     Schemes: http, https
 //     Host: 127.0.0.1:8080
-//     BasePath: /
-//     Version: 0.1
+//     BasePath: /v1/github
+//     Version: 0.4.3
 //     License: Apache 2.0  http://www.apache.org/licenses/
 //     Contact: Mark Chmarny<mark@chmarny.com> https://github.com/mchmarny/github-activity-counter
 //
@@ -29,4 +31,4 @@
 //       type: basic
 //       description:  HTTP basic authentication.
 //
-package counter
+package main

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+gcloud beta run deploy $SERVICE_NAME \
+	--image "gcr.io/${PROJECT}/${SERVICE_NAME}:${SERVICE_VERSION}" \
+    --service-account "${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+	--allow-unauthenticated \
+    --platform managed \
+	--region $SERVICE_REGION \
+	--set-env-vars "TOPIC=${SERVICE_NAME},HOOK_SECRET=${HOOK_SECRET}"

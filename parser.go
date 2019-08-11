@@ -1,4 +1,4 @@
-package counter
+package main
 
 import (
 	"encoding/json"
@@ -7,14 +7,23 @@ import (
 	"log"
 	"net/http"
 	"time"
-
-	"github.com/mchmarny/github-activity-counter/types"
 )
 
-func parseGitHubWebHook(secret []byte, req *http.Request) (*types.SimpleEvent, error) {
+const (
+	// sha1Prefix is the prefix used by GitHub before the HMAC hexdigest.
+	sha1Prefix = "sha1"
+	// signatureHeader is the GitHub header key used to pass the HMAC hexdigest.
+	signatureHeader = "X-Hub-Signature"
+	// eventTypeHeader is the GitHub header key used to pass the event type.
+	eventTypeHeader = "X-Github-Event"
+	// deliveryIDHeader is the GitHub header key used to pass the unique ID for the webhook event.
+	deliveryIDHeader = "X-Github-Delivery"
+)
+
+func parseGitHubWebHook(req *http.Request) (*SimpleEvent, error) {
 
 	var sig string
-	if sig = req.Header.Get(signatureHeader); len(sig) == 0 {
+	if sig = req.Header.Get(signatureHeader); sig == "" {
 		return nil, errors.New("No signature")
 	}
 	log.Printf("Sig: %s", sig)
@@ -36,7 +45,7 @@ func parseGitHubWebHook(secret []byte, req *http.Request) (*types.SimpleEvent, e
 		return nil, err
 	}
 
-	if !checkContentSignature(secret, sig, body) {
+	if !checkContentSignature([]byte(webHookSecret), sig, body) {
 		return nil, errors.New("Invalid signature")
 	}
 
@@ -44,10 +53,10 @@ func parseGitHubWebHook(secret []byte, req *http.Request) (*types.SimpleEvent, e
 
 }
 
-func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEvent, error) {
+func parseSimpleEvent(body []byte, eventID, eventType string) (*SimpleEvent, error) {
 
 	// placeholder for returned struct
-	se := &types.SimpleEvent{
+	se := &SimpleEvent{
 		Type:      eventType,
 		ID:        eventID,
 		Countable: true,
@@ -59,7 +68,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEven
 	case "issue_comment":
 		fallthrough
 	case "commit_comment":
-		ev := &types.CommentEvent{}
+		ev := &CommentEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)
@@ -70,7 +79,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEven
 		se.Repo = ev.Repo.Name
 
 	case "issues":
-		ev := &types.IssuesEvent{}
+		ev := &IssuesEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing issues: %v", err)
@@ -83,7 +92,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEven
 	case "pull_request":
 		fallthrough
 	case "pull_request_review_comment":
-		ev := &types.PullRequestEvent{}
+		ev := &PullRequestEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)
@@ -94,7 +103,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEven
 		se.Repo = ev.Repo.Name
 
 	case "pull_request_review":
-		ev := &types.ReviewEvent{}
+		ev := &ReviewEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)
@@ -105,7 +114,7 @@ func parseSimpleEvent(body []byte, eventID, eventType string) (*types.SimpleEven
 		se.Repo = ev.Repo.Name
 
 	case "push":
-		ev := &types.SimplePushEvent{}
+		ev := &SimplePushEvent{}
 		err := json.Unmarshal(body, &ev)
 		if err != nil {
 			log.Printf("Error parsing %s: %v", se.Type, err)

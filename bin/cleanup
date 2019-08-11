@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+
+ACTIVE_JOB_ID=$(gcloud dataflow jobs list \
+    --status active \
+    --filter "name:${SERVICE_NAME}" \
+    --region $SERVICE_REGION \
+    --format "value(JOB_ID)" )
+
+
+if [ -z "${ACTIVE_JOB_ID}" ]
+then
+    echo "No active Dataflow jobs"
+else
+    gcloud dataflow jobs cancel $ACTIVE_JOB_ID \
+        --region $SERVICE_REGION --quiet
+fi
+
+gcloud beta run services delete $SERVICE_NAME \
+    --platform managed \
+    --region $SERVICE_REGION \
+    --quiet
+
+gcloud beta pubsub topics delete ${SERVICE_NAME}
+
+gcloud iam service-accounts delete \
+    "${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+    --quiet
+

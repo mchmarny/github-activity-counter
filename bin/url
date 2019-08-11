@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+
+gcloud beta run services describe $SERVICE_NAME \
+    --region us-central1 \
+    --format "value(status.domain)"

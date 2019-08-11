@@ -1,0 +1,43 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+# PubSub
+gcloud pubsub topics create $SERVICE_NAME
+
+# BigQuery
+bq mk $SERVICE_NAME
+bq mk --schema id:string,repo:string,type:string,actor:string,event_time:timestamp,countable:boolean \
+      -t "${SERVICE_NAME}.events"
+
+# Dataflow
+gcloud dataflow jobs run $SERVICE_NAME \
+    	--gcs-location=gs://dataflow-templates/latest/PubSub_to_BigQuery --region=us-central1 \
+    	--parameters=inputTopic=projects/${PROJECT}/topics/${SERVICE_NAME},outputTableSpec=${PROJECT}:${SERVICE_NAME}.events
+
+
+# Account
+gcloud iam service-accounts create "${SERVICE_NAME}-sa" \
+    --display-name "Service Invoker Account for ${SERVICE_NAME}" \
+    --quiet
+
+gcloud beta run services add-iam-policy-binding $SERVICE_NAME \
+	--member="serviceAccount:${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+	--role=roles/run.invoker
+
+gcloud projects add-iam-policy-binding $PROJECT \
+    --member "serviceAccount:${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+    --role roles/pubsub.publisher
+
+gcloud projects add-iam-policy-binding $PROJECT \
+	--member "serviceAccount:${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+    --role roles/logging.logWriter
+
+gcloud projects add-iam-policy-binding $PROJECT \
+	--member "serviceAccount:${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+    --role roles/cloudtrace.agent
+
+gcloud projects add-iam-policy-binding $PROJECT \
+	--member "serviceAccount:${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+    --role roles/monitoring.metricWriter

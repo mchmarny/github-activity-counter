@@ -2,6 +2,11 @@
 .gitignore
 .DS_Store
 coverage.out
-deploy
-Makefile
-/samples
+/sample
+/query
+/image
+/bin
+README.md
+LICENSE
+*_test.go
+

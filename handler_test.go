@@ -1,23 +1,37 @@
-package counter
+package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/mchmarny/github-activity-counter/types"
+	mt "github.com/mchmarny/gcputil/metric"
 )
+
+func initTests() {
+
+	ctx := context.Background()
+
+	m, err := mt.NewClient(ctx)
+	if err != nil {
+		logger.Fatalf("Error creating metrics client : %v", err)
+	}
+	metricsClient = m
+
+	initQueue(ctx)
+}
 
 func TestGitHubEventHandler(t *testing.T) {
 
-	defaultConfigInitializer()
+	initTests()
 
 	const testID = "1234"
 	const testEventType = "issue_comment"
-	const testFilePath = "samples/issue_comment.json"
+	const testFilePath = "sample/issue_comment.json"
 
 	data, err := getFileContent(testFilePath)
 	if err != nil {
@@ -36,7 +50,7 @@ func TestGitHubEventHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(GitHubEventHandler)
+	handler := http.HandlerFunc(gitHubEventHandler)
 	handler.ServeHTTP(rr, r)
 
 	if status := rr.Code; status != http.StatusOK {
@@ -49,7 +63,7 @@ func TestGitHubEventHandler(t *testing.T) {
 		t.Errorf("Error while reading response body %v", err)
 	}
 
-	ev := &types.SimpleEvent{}
+	ev := &SimpleEvent{}
 	err = json.Unmarshal(body, &ev)
 	if err != nil {
 		t.Errorf("Error while unmarshaling SimpleEvent from body %v", err)
