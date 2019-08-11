@@ -4,9 +4,9 @@ Simple Cloud Run service you can configure as a target for GitHub event Webhook 
 
 ![](./image/metrics.png)
 
-Besides capturing the event throughput metrics in Stackdriver, this service also normalizes the GitHub activity data and stores the results in an easy to query BigQuery table.
+Besides capturing the event throughput metrics in Stackdriver, this service also normalizes the GitHub activity data and stores the results in an easy to query BigQuery table which can be used in Google Sheets or Data Studio.
 
-![](./image/query.png)
+![](./image/report.png)
 
 ## Why
 
@@ -150,6 +150,8 @@ WHERE event_time >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 28 DAY)
 GROUP BY actor, type
 ORDER BY 3 desc
 ```
+
+![](./image/query.png)
 
 You can find a few more query samples in the [queries](./queries) directory.
 
