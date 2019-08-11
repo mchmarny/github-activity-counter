@@ -10,9 +10,9 @@ Besides capturing the event throughput metrics in Stackdriver, this service also
 
 ## Why
 
-* Getting true GitHub activity is more nuanced than it would first appear (e.g. PR comments by author vs who committed it, which may be result of CI tool)
-* GitHub build-in tools and APIs don't expose data in an easy to query format (e.g. try query for user associated org grouped by monthly activity)
-* Most readily available SDKs/libraries address only data retrieval, and often have a lot of dependencies
+* Getting true GitHub activity is more nuanced than it would first appear (e.g. PR comments by author can be different from who committed that PR, i.e. CI pipeline)
+* GitHub's own build-in tools and APIs don't expose data in an easy to query format (e.g. can't query for user associated with an org in specific time window)
+* Most readily available SDKs/libraries address only the data retrieval (also have often many dependencies)
 
 ## Supported Event Types
 
@@ -38,16 +38,22 @@ The current implementation supports following event types:
 | Actor   | string | GitHub username of the user who initialized that event (e.g. PR author vs the PR merger who could be a automation tool like prow) |
 | EventAt | time   | Original event time (not the WebHook processing time, except for push which could include multiple commits)                       |
 
+## Pre-requirements
+
+### GCP Project and gcloud SDK
+
+If you don't have one already, start by creating new project and configuring [Google Cloud SDK](https://cloud.google.com/sdk/docs/). Similarly, if you have not done so already, you will have [set up Cloud Run](https://cloud.google.com/run/docs/setup).
+
 ## Setup
 
 To setup this service you will:
 
-* Build docker image from this repo (using Cloud Build)
+* Build docker image from the source in this repo (using Cloud Build)
 * Configure service dependencies (PubSub topic, Dataflow job, BigQuery table)
 * Deploy and configure service using the previously built image (Cloud Run)
 * Setup WebHook (GitHub)
 
-First, start by cloning this repo:
+To start, clone this repo:
 
 ```shell
 git clone https://github.com/mchmarny/github-activity-counter.git
@@ -61,9 +67,9 @@ cd github-activity-counter
 
 ### Build Container Image
 
-Cloud Run runs container images. To build one for this service we are going to use the included [Dockerfile](./Dockerfile) and submit a build job to Cloud Build using [bin/image](./bin/image) script.
+Cloud Run runs container images. To build one for this service we are going to use the included [Dockerfile](./Dockerfile) and submit it along with the source code as a build job to Cloud Build using [bin/image](./bin/image) script.
 
-> Note, you should review each one of the provided scripts for complete content of these commands
+> You should review each one of the provided scripts for content to understand the individual commands
 
 ```shell
 bin/image
@@ -73,9 +79,9 @@ bin/image
 
 To work properly, the Cloud Run service will require a few dependencies:
 
-* PubSub topic to which publish events [name: `eventcounter`]
+* PubSub topic to which it will publish events [name: `eventcounter`]
 * BigQuery table to store the processed events [name: `eventcounter.events`]
-* Dataflow job to stream PubSub events to BigQuery [name: `eventcounter`]
+* Dataflow job to stream events from PubSub to BigQuery [name: `eventcounter`]
 
 To create these dependencies run the [bin/setup](./bin/setup) script:
 
@@ -83,7 +89,7 @@ To create these dependencies run the [bin/setup](./bin/setup) script:
 bin/setup
 ```
 
-In addition to the above dependencies, we are going to create a specific service account dedicated to this service. And to ensure that that service is able to do only the intended tasks and nothing more, we are going to configure it with a explicit roles:
+In addition to the above dependencies, the `bin/setup` script also create a specific service account which will be used to run Cloud Run service. To ensure that this service is able to do only the intended tasks and nothing more, we are going to configure it with a few explicit roles:
 
 * `run.invoker` - required to execute Cloud Run service
 * `pubsub.publisher` - required to publish events to Cloud PubSub
@@ -91,11 +97,13 @@ In addition to the above dependencies, we are going to create a specific service
 * `cloudtrace.agent` - required for Stackdriver tracing
 * `monitoring.metricWriter` - required to write custom metrics to Stackdriver
 
-Finally, the ensure that our service is only accepting data from GitHub, we are going to created a Webhook secret that will be shared between GitHub and our service:
+Finally, the ensure that our service is only accepting data from GitHub, we are going to created a secret that will be shared between GitHub and our service:
 
 ```shell
 export HOOK_SECRET=$(openssl rand -base64 32)
 ```
+
+> The above `openssl` command creates an opaque string. If for some reason you do not have `openssl` configured you can just set `HOOK_SECRET` to a your own secret. Just don't re-use other secrets or make it too easy to guess.
 
 ### Deploy the Cloud Run Service
 
@@ -105,11 +113,7 @@ Once you have configured all the service dependencies, we can now deploy your Cl
 bin/service
 ```
 
-The output of the script will include the URL by which you can access that service. If you missed it or if you need it later you can obtain it by executing the [bin/url](./bin/url) script:
-
-```shell
-bin/url
-```
+The output of the script will include the URL by which you can access that service.
 
 ### Setup GitHub WebHook
 
