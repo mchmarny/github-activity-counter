@@ -20,19 +20,7 @@ func initQueue(ctx context.Context) {
 		logger.Fatalf("Error creating PubSub client: %v", e)
 	}
 	client = c
-
-	t := c.Topic(topicName)
-	topicExists, _ := t.Exists(ctx)
-
-	if !topicExists {
-		logger.Printf("Topic %s not found, creating...", topic)
-		newTop, err := c.CreateTopic(ctx, topicName)
-		if err != nil {
-			logger.Fatalf("Unable to create topic: %s - %v", topic, err)
-		}
-		topic = newTop
-	}
-	topic = t
+	topic = c.Topic(topicName)
 }
 
 func store(ctx context.Context, event *SimpleEvent) error {

@@ -24,9 +24,9 @@ gcloud beta run services delete $SERVICE_NAME \
     --region $SERVICE_REGION \
     --quiet
 
-gcloud beta pubsub topics delete ${SERVICE_NAME}
+gcloud beta pubsub topics delete ${SERVICE_NAME} \
+    --quiet
 
 gcloud iam service-accounts delete \
     "${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
     --quiet
-
