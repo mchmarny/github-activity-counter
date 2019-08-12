@@ -3,6 +3,17 @@
 DIR="$(dirname "$0")"
 . "${DIR}/config"
 
+# Required services
+gcloud services enable --quiet \
+    bigquery-json.googleapis.com \
+    bigquerystorage.googleapis.com \
+    compute.googleapis.com \
+    cloudbuild.googleapis.com \
+    dataflow.googleapis.com \
+    iam.googleapis.com \
+    pubsub.googleapis.com \
+    run.googleapis.com
+
 # PubSub
 gcloud pubsub topics create $SERVICE_NAME
 
