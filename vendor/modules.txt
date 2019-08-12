@@ -21,7 +21,7 @@ github.com/golang/protobuf/protoc-gen-go/descriptor
 github.com/googleapis/gax-go/v2
 # github.com/hashicorp/golang-lru v0.5.1
 github.com/hashicorp/golang-lru/simplelru
-# github.com/mchmarny/gcputil v0.1.6
+# github.com/mchmarny/gcputil v0.1.7
 github.com/mchmarny/gcputil/env
 github.com/mchmarny/gcputil/metric
 github.com/mchmarny/gcputil/project

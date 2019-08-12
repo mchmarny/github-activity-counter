@@ -3,7 +3,7 @@
 # Global config
 SERVICE_NAME="eventcounter"
 SERVICE_REGION="us-central1"
-SERVICE_VERSION="0.4.3"
+SERVICE_VERSION="0.4.4"
 
 # GCP metadata
 PROJECT=$(gcloud config get-value project)
