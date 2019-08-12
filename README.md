@@ -65,16 +65,6 @@ And navigate into that directory:
 cd github-activity-counter
 ```
 
-### Build Container Image
-
-Cloud Run runs container images. To build one for this service we are going to use the included [Dockerfile](./Dockerfile) and submit it along with the source code as a build job to Cloud Build using [bin/image](./bin/image) script.
-
-> You should review each one of the provided scripts for content to understand the individual commands
-
-```shell
-bin/image
-```
-
 ### Configure Dependencies
 
 To work properly, the Cloud Run service will require a few dependencies:
@@ -104,6 +94,16 @@ export HOOK_SECRET=$(openssl rand -base64 32)
 ```
 
 > The above `openssl` command creates an opaque string. If for some reason you do not have `openssl` configured you can just set `HOOK_SECRET` to a your own secret. Just don't re-use other secrets or make it too easy to guess.
+
+### Build Container Image
+
+Cloud Run runs container images. To build one for this service we are going to use the included [Dockerfile](./Dockerfile) and submit it along with the source code as a build job to Cloud Build using [bin/image](./bin/image) script.
+
+> You should review each one of the provided scripts for content to understand the individual commands
+
+```shell
+bin/image
+```
 
 ### Deploy the Cloud Run Service
 
