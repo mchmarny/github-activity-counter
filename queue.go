@@ -25,10 +25,10 @@ func initQueue(ctx context.Context) {
 	topicExists, _ := t.Exists(ctx)
 
 	if !topicExists {
-		logger.Printf("Topic %s not found, creating...", topic)
+		logger.Printf("Topic %q not found, creating...", topicName)
 		newTop, err := c.CreateTopic(ctx, topicName)
 		if err != nil {
-			logger.Fatalf("Unable to create topic: %s - %v", topic, err)
+			logger.Fatalf("Unable to create topic %q: %v", topicName, err)
 		}
 		topic = newTop
 	}
