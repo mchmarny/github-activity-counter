@@ -35,6 +35,7 @@ gcloud iam service-accounts create "${SERVICE_NAME}-sa" \
 
 gcloud beta run services add-iam-policy-binding $SERVICE_NAME \
 	--member="serviceAccount:${SERVICE_NAME}-sa@${PROJECT}.iam.gserviceaccount.com" \
+	--region="${SERVICE_REGION}" \
 	--role=roles/run.invoker
 
 gcloud projects add-iam-policy-binding $PROJECT \
