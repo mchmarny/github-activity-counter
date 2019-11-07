@@ -4,7 +4,10 @@ DIR="$(dirname "$0")"
 . "${DIR}/config"
 
 
-gcloud beta run services describe $SERVICE_NAME \
+SERVICE_URL=$(gcloud beta run services describe $SERVICE_NAME \
     --region $SERVICE_REGION \
     --platform managed \
-    --format "value(status.domain)"
+    --format "value(status.domain)")
+
+echo "POST:"
+echo "${SERVICE_URL}/v1/github"
