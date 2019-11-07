@@ -122,7 +122,7 @@ GitHub has good [instructions](https://developer.github.com/webhooks/creating/) 
 * Signing to GitHub, and navigating to repo or org settings
 * Clicking `Webhooks` on the left panel
 * Click on the `Add WebHook` button
-* Pasting your deployed function URL (run `bin/url` if you can't remember it)
+* Pasting your deployed function URL (run `bin/url` if you can't remember it, make sure you include `/v1/github` in the POST target)
 * Click `Edit` under Secret and paste your secret (run `echo $HOOK_SECRET`)
 * Selecting `application/json` as the content type
 * Select `Send me everything` or select individual events you want to count (see supported events)
